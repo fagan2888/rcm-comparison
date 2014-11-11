@@ -1,45 +1,47 @@
-function betas = PSLoptimizer(observations, nDraws_)
-....
-%   Path size logit optimization
-%   MAI ANH TIEN - DIRO
-%   29 - July - 2013
-%   MAIN PROGRAM
-%   ---------------------------------------------------
-%%
-Credits;
-%------------------------------------------------------
-%   Load data
-%Import data from workspace
-% clear all global;
-% clear all;
-% importfile('./simulatedData/5.mat');
-%importfile('WSPSL_NoPS.mat');
-%importfile('WSPSL.mat');
-%globalVar;
+function betas = PSLoptimizer(observations, paths, samplingBetas)
+    %{
+    samplingBetas: Parameters that were used to generate the choice sets and
+                   that we use here for sampling correction.
+    %}
 
-% Initialize email notification
-
-%   --------------------------------------------------
+    ....
+    %   Path size logit optimization
+    %   MAI ANH TIEN - DIRO
+    %   29 - July - 2013
+    %   MAIN PROGRAM
+    %   ---------------------------------------------------
+    %%
+    Credits;
+    %------------------------------------------------------
+    %   Load data
+    %Import data from workspace
+    % clear all global;
+    % clear all;
+    % importfile('./simulatedData/5.mat');
+    %importfile('WSPSL_NoPS.mat');
 
     globalVar;
 
-    nDraws = nDraws_;
     file_linkIncidence = 'data/linkIncidence.txt';
     file_AttEstimatedtime = 'data/ATTRIBUTEestimatedtime.txt';
     file_turnAngles = 'data/ATTRIBUTEturnangles.txt';
-    file_pathSampling = 'output/choice_sets_estimation/choice_sets.txt';
+    % file_pathSampling = 'output/choice_sets_estimation/choice_sets.txt';
     file_observations = 'data/observationsForEstimBAI.txt';
 
     tic;
 
-    loadPathSizeData;
+    loadPathSizeData(paths);
     Obs = observations;
     shape = size(Obs);
     nbobs = shape(1);
 
+    shape = size(paths);
+    nDraws = shape(1) / nbobs
+
     % reloadObservations(file_observations);
     idxObs = 1:nbobs;
     Op = Op_structure;
+    Op.n = 5;
     initialize_optimization_structure();
     %Op.x = [1; -2; -2];
     %Op.x = [ -2.894586e+00;-9.910521e-01;-9.973315e-01; -3.153325e+00;1.171681e+01];
@@ -47,14 +49,15 @@ Credits;
     Op.Hessian_approx = OptimizeConstant.SSA_BFGS;
     Gradient = zeros(nbobs,Op.n);
 
-    getPathAttributes;
-    getEPS;
+    getPathAttributes(samplingBetas);
+    getEPS(samplingBetas);
 
     %---------------------------
     %Starting optimization
     %progTest
     disp('Start Optimizing ....')
-    [Op.value, Op.grad ] = getPSLL();
+    llHandle = @getPSLL;
+    [Op.value, Op.grad] = llHandle();
     PrintOut(Op);
     % print result to string text
     header = [sprintf('%s \n',file_observations) Op.Optim_Method];
@@ -73,7 +76,7 @@ Credits;
             break;
         end
       else
-        ok = btr_interate();
+        ok = btr_interate(llHandle);
         PrintOut(Op);
       end
       [isStop, Stoppingtype, isSuccess] = CheckStopping(Op);  
@@ -87,7 +90,7 @@ Credits;
       end
     end
     
-    [ll, grad, betas] = getPSLL();
+    [ll, grad, betas] = llHandle();
     
     %   Compute variance - Covariance matrix
     %PrintOut(Op);

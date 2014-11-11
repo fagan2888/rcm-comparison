@@ -1,3 +1,5 @@
+function loadPathSizeData(paths)
+
 % Loading data for path size model
 disp('Loading data ...')
 
@@ -84,7 +86,9 @@ for i = 1:nbnonzero
 end
 
 global Alters;
-Alters = spconvert(load(file_pathSampling));
+% Alters = spconvert(load(file_pathSampling));
+Alters = paths;
+
 %   Load observations
 global Obs;
 global nbobs;       % Number of observation
@@ -92,3 +96,4 @@ global maxstates;   % Number of states
 Obs = spconvert(load(file_observations));
 [nbobs, maxstates] = size(Obs);
 
+end

@@ -1,7 +1,12 @@
 % Calculate path attribute
 % Travel time, Left turn, LC, Path Size
 % Sampling correction
-function isDone = getPathAttributes()
+function isDone = getPathAttributes(samplingBetas)
+    %{
+    samplingBetas: Parameters that were used to generate the choice sets and
+                   that we use here for sampling correction.
+    %}
+
     global Alters;
     global EstimatedTime;
     global LeftTurn;
@@ -78,7 +83,8 @@ function isDone = getPathAttributes()
     Atts = Atts';
     disp(size(Atts));
     % Sampling correction
-    beta = [-1.8,-0.9,-0.8,-4.0]';
+    % beta = [-1.8,-0.9,-0.8,-4.0]';
+    beta = samplingBetas;
     % loadData; % Recursive logit
     Mfull = getM(beta,false);    
     M = Mfull(1:lastIndexNetworkState,1:lastIndexNetworkState); 

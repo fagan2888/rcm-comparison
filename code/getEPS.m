@@ -1,6 +1,11 @@
 %   Get Expanded PS
 %%
-function isDone = getEPS()
+function isDone = getEPS(samplingBetas)
+    %{
+    samplingBetas: parameters that were used to generate the choice sets and
+                   that we use here for sampling correction.
+    %}
+
     global Alters;
     global EstimatedTime;
     global Op;
@@ -14,7 +19,8 @@ function isDone = getEPS()
     disp('Calculating path size logit attributes ...');    
     I = find(EstimatedTime);
     travelTime = zeros(size(EstimatedTime,2));
-    beta = [-1.8,-0.9,-0.8,-4.0]';
+    % beta = [-1.8, -0.9, -0.8, -4.0]';
+    beta = samplingBetas;
     Mfull = getM(beta,false);
     M = Mfull(1:lastIndexNetworkState,1:lastIndexNetworkState);
     M(:,lastIndexNetworkState+1) = sparse(zeros(lastIndexNetworkState,1));

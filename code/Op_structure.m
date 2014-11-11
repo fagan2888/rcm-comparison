@@ -4,7 +4,7 @@ classdef Op_structure
       Optim_Method = OptimizeConstant.LINE_SEARCH_METHOD; % or 'BTR'
       CombinedType = 'NONE';
       Hessian_approx = OptimizeConstant.BFGS;     
-      n = 5;          % size of vector
+      n = 4;          % size of vector
       alpha = 0.0001; % Paramters for linesearch algorithm
       gamma = 0.9 ;   % Paramters for linesearch algorithm
       maxIter = 200;

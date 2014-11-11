@@ -1,7 +1,7 @@
 %   Compute Link Size attribute from data
 %   
 %%
-function ExpV_is_ok = getLinkSizeAtt()
+function ExpV_is_ok = getLinkSizeAtt(betas)
     global incidenceFull; 
     global Mfull;
     global Obs;     % Observation
@@ -10,7 +10,8 @@ function ExpV_is_ok = getLinkSizeAtt()
     global Atts;
     
     % beta = [-2.9806, -1.0744, -0.3580, -4.6282]';
-    beta = [-2.5,-1,-0.4,-20]';
+    % beta = [-2.5,-1,-0.4,-20]';
+    beta = betas;
     
     % ----------------------------------------------------
     mu = 1; % MU IS NORMALIZED TO ONE
@@ -21,7 +22,7 @@ function ExpV_is_ok = getLinkSizeAtt()
     M(:,lastIndexNetworkState+1) = sparse(zeros(lastIndexNetworkState,1));
     M(lastIndexNetworkState+1,:) = sparse(zeros(1, lastIndexNetworkState + 1));
    
-    for n = 1:nbobs     
+    for n = 1:nbobs
         n
         dest = Obs(n, 1);
         orig = Obs(n, 2);

@@ -27,8 +27,7 @@ function attributes = myGetPathAttributes(choiceSet, nDraws)
         
     nPaths = size(choiceSet, 1);
     attributes = sparse(zeros(5, nPaths));
-    for n = 1:nPaths
-        
+    for n = 1:nPaths        
         if mod(n, nDraws) == 0
             fix(n / nDraws);
         end

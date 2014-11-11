@@ -3,11 +3,11 @@
 %   MAI ANH TIEN - 9.August.2013
 %
 %%
-function isSuccess = btr_interate()    
+function isSuccess = btr_interate(llHandle)
     global Op;
     Op.step = btr_step_steihaug_toint(Op);
     xold = Op.x;
-    [newValue gradplus] = LL(Op.x + Op.step);
+    [newValue gradplus] = LL(Op.x + Op.step, llHandle);
     Op.deltaGrad = gradplus - Op.grad;    
     % compute quadratic model
     md = Op.value + Op.grad'*Op.step + 0.5*Op.step' * Op.H * Op.step;

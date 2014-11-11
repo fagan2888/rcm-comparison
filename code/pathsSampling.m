@@ -4,7 +4,7 @@
 
 function samples = pathsSampling(observations, nDraws, betas, includeObs)
     
-    if nargin ~= 4
+    if nargin < 4
         includeObs = true;
     end  
     
@@ -137,11 +137,14 @@ function samples = pathsSampling(observations, nDraws, betas, includeObs)
         end
         Alters((n-1) * nDraws + 1 : n * nDraws, :) = choiceSet;
     end
-    samples = Alters;
-    % Write to sampling file
+    
     [i,j,val] = find(Alters);
-    data_dump = [i,j,val];
-    save('output/choice_sets_estimation/choice_sets.txt','data_dump','-ascii');
+    samples = spconvert([i,j,val]);
+    %{
+    % Write to sampling file
+    save('output/choice_sets_estimation/choice_sets.txt','samples','-ascii');
+    %}
+
     nLoop
     elapsedTime = toc / 60;
     disp(elapsedTime);

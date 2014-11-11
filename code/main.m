@@ -1,4 +1,8 @@
-function betas = main(observations)
+function betas = main(observations, lsBetas)
+    %{
+    lsBetas: Parameters used to compute the link size attribute. The attribute
+             won't be used if lsBetas is not provided.
+    %}
    
     ....
     %   Linked based network route choice model with unrestricted choice set
@@ -25,7 +29,7 @@ function betas = main(observations)
     global Gradient;
     global Obs;
     
-    isLinkSizeInclusive = true;
+    isLinkSizeInclusive = nargin == 2;
     file_linkIncidence = 'data/linkIncidence.txt';
     file_AttEstimatedtime = 'data/ATTRIBUTEestimatedtime.txt';
     file_turnAngles = 'data/ATTRIBUTEturnangles.txt';
@@ -38,10 +42,15 @@ function betas = main(observations)
     nbobs = size(Obs, 1);
     idxObs = 1:nbobs;
 
-    loadData;
+    if ~isLinkSizeInclusive
+        loadData();
+    else
+        loadData(lsBetas);
+    end
 
     % Initialize the optimizer structure
     Op = Op_structure;
+    Op.n = 4 + isLinkSizeInclusive;
     initialize_optimization_structure();
     
     Op.Optim_Method = OptimizeConstant.TRUST_REGION_METHOD;
@@ -57,7 +66,8 @@ function betas = main(observations)
     tic ;
     %progTest
     disp('Start Optimizing ....')
-    [Op.value, Op.grad] = getLL();
+    llHandle = @getLL;
+    [Op.value, Op.grad] = llHandle();
     PrintOut(Op);
     % print result to string text
     header = [sprintf('%s \n',file_observations) Op.Optim_Method];
@@ -76,7 +86,7 @@ function betas = main(observations)
                 break;
             end
         else
-            ok = btr_interate();
+            ok = btr_interate(llHandle);
             PrintOut(Op);
         end
         [isStop, Stoppingtype, isSuccess] = CheckStopping(Op);  
@@ -90,7 +100,7 @@ function betas = main(observations)
         end
     end
 
-    [Op.value, Op.grad, betas] = getLL();
+    [Op.value, Op.grad, betas] = llHandle();
 
     %   Compute variance - Covariance matrix
     %PrintOut(Op);

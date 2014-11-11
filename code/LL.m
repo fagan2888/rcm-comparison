@@ -1,7 +1,7 @@
-function [f g] = LL(x)
+function [f g] = LL(x, llHandle)
     global Op;
     Op.x = x;
-    [f g] = getPSLL(); % getLL();
+    [f g] = llHandle(); % getPSLL(); # getLL();
     Op.nFev  = Op.nFev + 1;
 %     step = 1e-6;
 %     H = eye(Op.n) * step;
