@@ -72,13 +72,11 @@ if N_SAMPLES > 0
     psPrediction(estimatedBetas, validSet, N_SAMPLES, N_DRAWS_PREDICTION, RESULTS_PS_FILE);
 end
 
-% If necessary, we estimate the RL model with or without the link size attribute.
+% If necessary, we estimate the RL model with or without the link size (LS) attribute.
 if isempty(ESTIMATED_BETAS_RL)
-    if isempty(LINK_SIZE_BETAS)
-        % Without the link size attribute.
+    if isempty(LINK_SIZE_BETAS) % Without LS.
         estimatedBetasRL = rlEstimation(trainSet);
-    else
-        % With the link size attribute.
+    else % With LS.
         estimatedBetasRL = rlEstimation(trainSet, LINK_SIZE_BETAS);
     end
 else
@@ -107,7 +105,7 @@ if PREDICTION_RL
     lastIndexNetworkState = size(incidenceFull, 1);
 
     results = [];
-    testSetSize = size(Obs, 1);
+
     for i = 1:testSetSize
         i
         

@@ -1,7 +1,5 @@
 %{
 TODO: Must we support w/ LS attribute? Probably not.
-TODO: Float betas for LS attribute (getLinkSizeAtt()).
-
 TODO: Must we support basic PS? Probably. Not implemented in the existing code.
 %}
 
