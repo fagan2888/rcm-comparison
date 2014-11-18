@@ -1,0 +1,118 @@
+
+\documentclass[12pt,a4paper]{article}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{pst-node}
+\usepackage{pst-plot}
+\usepackage{pstricks}
+\usepackage{graphicx}
+
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+%\input{tcilatex}
+
+\newcommand{\footnoteremember}[2]{
+\footnote{#2}
+  \newcounter{#1}
+  \setcounter{#1}{\value{footnote}}
+}
+\newcommand{\footnoterecall}[1]{
+\footnotemark[\value{#1}]
+}
+
+
+\begin{document}
+\begin{titlepage}
+\title{A cross-validation approach for comparing prediction performance of discrete choice models based on sampled choice sets}
+  \author{Alphabetical order students then professors: Eric Larsen \and Jean-Philippe Raymond \and Emma Frejinger\footnote{Department of Computer Science and Operations Research and CIRRELT, Universit\'e de Montr\'eal, Canada, emma.frejinger@cirrelt.ca} \and Angelo Guevara}
+\maketitle
+
+\noindent Keywords: discrete choice, sampling of alternatives, out-of-sample validation, cross-validation, prediction
+
+\begin{abstract}
+.
+\end{abstract}
+
+\end{titlepage}
+
+
+\section{Introduction} \label{sec:introduction}
+Discrete choice models extensively used to analyze individuals' choices and in some applications, such as route or mode/destination choice, the choice sets are very large. In this context it can be useful to estimate models based on a sample of all alternatives. It is important to perform out-of-sample validation to assess the quality of a model. This is however problematic when using sampled choice sets since observed alternatives may not be sampled. This paper proposes a cross-validation approach that addresses this issue. The key lies in the definition of a loss function that is well defined even for observed alternatives that have not been sampled.
+
+LITERATURE REVIEW: reference papers focusing on consistent estimation (Guevara and Ben-Akiva times 2, Frejinger et al., ...), reference papers (to my knowledge there are very few) that use sampled choice sets for prediction. There is a short note in \cite{BenALerm85}. 
+
+Various ways of model assessment, see introduction \cite{KeanWolp07}. 
+Scope: objective model selection. validation is one important part. here we focus on samples of alternatives.
+
+DESCRIBE PROBLEM and reference some studies doing cross-validation without sampling of alternatives (there are many, in particular some famous papers on regression, so lets take some examples and preferable discrete choice).
+
+BREIF DESCRIPTION OF METHODOLOGY: we change the space of comparison and use utility as a reference. Well defined loss function. 
+
+Outline structure of the paper.
+
+\section{Cross-validation approach} \label{sec:cross validation}
+
+Check paper Efron and Tibshirani (1997) Improvements on cross-validation: The 632+ bootstrap method
+
+Literature using discrete choice or dynamic discrete choice models and cross validation or out-of-sample validation
+\cite{KeanWolp07}
+
+Review briefly other literature using cross-validation. E.g. Kohavi (1995) A study of cross-validation and bootstrap from accuracy estimation and model selection.
+
+Describe the approach in a general way, application to any choice context where sampled alternatives are used.
+
+Notation, to be discussed (try to follow earlier papers by Angelo and Emma)
+\begin{itemize}
+\item Alternative $i$ or $j$, individual $n$, utility $U_{in}$
+\item True choice set $C_n$, $|C_n|=J_n$ sampled choice set $D_n$, sampling correction $\pi(D_n|j)$
+\item $N$ number of observations (TBD: is $n$ and individual or observation)
+\item Cross validation: sets of observations training, validation and test sets, iterations $k=1,\ldots,K$
+\item Sampling of choice sets for estimation $D^A$, sampling of choice sets for validation $D^V$, number of draws for generating each.
+\end{itemize}
+
+
+
+\section{Route choice application} \label{sec:routechoice}
+Nice application because large scale and difficult due to network structure. Moreover, universal choice set is unknown. Introduce briefly the specific issues of route choice and the models that we aim to compare.
+
+
+\subsection{Estimation}
+\subsection{Prediction}
+Path size, with beta from expanded, but number of paths without expansion factor.
+
+\section{Results} \label{sec:results}
+In addition to providing some conclusions with respect to the route choice application, we should provide a numerical analysis and discussion of the "stability" of the approach.
+
+\section{Conclusions and future work} \label{sec:conclusions}
+
+
+\bibliographystyle{dcu}
+\bibliography{refs}
+
+\end{document}
