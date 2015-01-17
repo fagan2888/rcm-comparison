@@ -1,15 +1,6 @@
-%{
-TODO: Must we support w/ LS attribute? Probably not.
-TODO: Must we support basic PS? Probably. Not implemented in the existing code.
-%}
-
-function estimatedBetas = psEstimation(observations, nDraws, samplingBetas)
+function estimatedBetas = psEstimation(observations, paths, samplingBetas)
     %{
-    Estimates an expanded path size logit model. For each observation (in
-    observations), nDraws paths are generated with a recursive logit model
-    parametrized by samplingBetas. These generated paths are used to fit the
-    model.
+    Estimates an expanded path size logit model. paths are used to fit the model.
     %}
-    paths = pathsSampling(observations, nDraws, samplingBetas);
     estimatedBetas = PSLoptimizer(observations, paths, samplingBetas);
 end

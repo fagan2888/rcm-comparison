@@ -83,6 +83,7 @@ else
     estimatedBetasRL = ESTIMATED_BETAS_RL;
 end
 
+% TODO : Put in a function.
 if PREDICTION_RL
     global incidenceFull;
     global Obs;
@@ -145,5 +146,4 @@ if PREDICTION_RL
     txtFile = fopen(RESULTS_RL_FILE, 'w');
     fprintf(txtFile, '%d\n', results);
     fclose(txtFile);
-
 end
