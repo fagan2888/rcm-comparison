@@ -1,5 +1,4 @@
 function paths = pathGeneration(observations, label, nDraws, samplingBetas, varargin)
-    % TODO: Test.
     %{
     For each observation, nDraws paths are generated with a recursive logit
     model parametrized by samplingBetas.
