@@ -40,8 +40,7 @@ function paths = pathGeneration(observations, label, nDraws, samplingBetas, vara
     opts = ip.Results;
 
     % We check if the paths can be retrieved from the cache.
-    file = filename(CACHE_DIR, ...
-                    opts.label, ...
+    file = filename(opts.label, ...
                     opts.rngSeed, ...
                     opts.nDraws, ...
                     opts.samplingBetas);
@@ -54,27 +53,21 @@ function paths = pathGeneration(observations, label, nDraws, samplingBetas, vara
        % Nothing. 
     end
 
-    % No previously generated paths, we generate them.
+    % No previously generated paths. We generate them.
     nDraws_ = opts.nDraws;
+    nestFile = '';
     if ~isempty(opts.nest)
         if opts.nest.nDraws >= opts.nDraws
             error('nest.nDraws must be smaller than nDraws.');
         end
         nDraws_ = nDraws_ - opts.nest.nDraws;
+        nestFile = filenameFromPaths(opts.nest);
+        % TODO: Check if nestFile actually exists.
     end
 
     rng(opts.rngSeed);
     newPaths = pathsSampling(observations, nDraws_, opts.samplingBetas);
-
-    nestFile = '';
-    if ~isempty(opts.nest)
-        nestFile = filename(CACHE_DIR, ...
-                            opts.nest.label, ...
-                            opts.nest.rngSeed, ...
-                            opts.nest.nDraws, ...
-                            opts.nest.samplingBetas);
-    end
-    
+     
     paths.label = opts.label;
     paths.rngSeed = opts.rngSeed;
     paths.nDraws = opts.nDraws;
@@ -85,10 +78,17 @@ function paths = pathGeneration(observations, label, nDraws, samplingBetas, vara
     % We save the paths structure array.
     save(file, 'paths');
     disp(sprintf('Paths were saved at %s.', file));
-end
 
+    
+    function file = filename(label, seed, nDraws, betas)
+        file = sprintf('%s/%s_%d_%d_%s.mat', ...
+                       CACHE_DIR, label, seed, nDraws, floatsToString(betas'));
+    end
 
-function file = filename(folderPath, label, seed, nDraws, betas)
-    file = sprintf('%s/%s_%d_%d_%s.mat', ...
-                   folderPath, label, seed, nDraws, floatsToString(betas'));
+    function file = filenameFromPaths(paths)
+        file = filename(paths.label, ...
+                        paths.rngSeed, ...
+                        paths.nDraws, ...
+                        paths.samplingBetas);
+    end
 end

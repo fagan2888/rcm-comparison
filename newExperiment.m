@@ -50,8 +50,10 @@ trainSet = myObs(1:idxEndTrain, :);
 validSet = myObs(idxEndTrain+1:idxEndValid, :);
 testSet = myObs(idxEndValid+1:end, :);
 
-paths = pathGeneration(trainSet, sprintf('train%d', RNG_SEED), 5, BETAS, 'rngSeed', 711)
-morePaths = pathGeneration(trainSet, sprintf('train%d', RNG_SEED), 15, BETAS, 'rngSeed', 711, 'nest', paths)
+paths = pathGeneration(trainSet, sprintf('train%d', RNG_SEED), 5, BETAS, ...
+                       'rngSeed', 20155)
+morePaths = pathGeneration(trainSet, sprintf('train%d', RNG_SEED), 15, BETAS, ...
+                           'rngSeed', 201515, 'nest', paths)
 
 %{
 
