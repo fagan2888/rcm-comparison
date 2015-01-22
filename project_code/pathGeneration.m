@@ -1,3 +1,7 @@
+% Author: Jean-Philippe Raymond (raymonjp@iro.umontreal.ca)
+% =========================================================
+
+
 function paths = pathGeneration(observations, label, nDraws, samplingBetas, varargin)
     %{
     For each observation, nDraws paths are generated with a recursive logit

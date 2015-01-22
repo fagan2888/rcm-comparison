@@ -1,3 +1,7 @@
+% Author: Jean-Philippe Raymond (raymonjp@iro.umontreal.ca)
+% =========================================================
+
+
 function psPrediction(betas, observations, nSamples, nDraws, resultsFile)
     %{
     Applies the path size model, parametrized by betas, on the observations

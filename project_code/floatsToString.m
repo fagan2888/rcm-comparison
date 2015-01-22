@@ -1,3 +1,7 @@
+% Author: Jean-Philippe Raymond (raymonjp@iro.umontreal.ca)
+% =========================================================
+
+
 function string = floatsToString(floats)
     % Converts a vector of floats to a string.
     string = num2str(floats, '%.4f_');

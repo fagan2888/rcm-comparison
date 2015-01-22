@@ -1,7 +1,10 @@
+% Author: Jean-Philippe Raymond (raymonjp@iro.umontreal.ca)
+% =========================================================
+
 RNG_SEED = 2015;
 
 OBS_FILE = 'data/observationsForEstimBAI.txt';
-TRAIN_SET_SIZE = 9; % ~50% (916)
+TRAIN_SET_SIZE = 916; % ~50% (916)
 VALID_SET_SIZE = 458; % ~25% (458)
 % TEST_SET_SIZE = 1832 - TRAIN_SET_SIZE - VALID_SET_SIZE; % ~25%
 
@@ -50,10 +53,11 @@ trainSet = myObs(1:idxEndTrain, :);
 validSet = myObs(idxEndTrain+1:idxEndValid, :);
 testSet = myObs(idxEndValid+1:end, :);
 
-paths = pathGeneration(trainSet, sprintf('train%d', RNG_SEED), 5, BETAS, ...
-                       'rngSeed', 20155)
-morePaths = pathGeneration(trainSet, sprintf('train%d', RNG_SEED), 15, BETAS, ...
-                           'rngSeed', 201515, 'nest', paths)
+paths = pathGeneration(trainSet, ...
+                       sprintf('train%d', RNG_SEED), ...
+                       N_DRAWS_ESTIMATION, ...
+                       BETAS, ...
+                       'rngSeed', 201550)
 
 %{
 

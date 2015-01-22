@@ -1,3 +1,7 @@
+% Author: Jean-Philippe Raymond (raymonjp@iro.umontreal.ca)
+% =========================================================
+
+
 function estimatedBetas = rlEstimation(observations, lsBetas)
     % Estimates the RL model with or without the link size (LS) attribute.
     if nargin < 2 % Without LS.
