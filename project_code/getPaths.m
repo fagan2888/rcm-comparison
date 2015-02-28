@@ -30,16 +30,19 @@ function paths = getPaths(pathsStruct)
 
     paths = zipRows(pathsArray, N);
 
-    % Computing the number of replications (the first element of each path).
+    % Computing the numbers of replications (the first element of each path).
     paths = paths(:, 2:end);
     replications = getReplications(paths, pathsStruct.nDraws);
     paths = [replications, paths];
     
     % TODO: Having a number of replications prepended to every path, as
-    %       required with the existing code, seems somewhat dirty. Also, the
-    %       computation of it in the existing code (pathsSampling.m) could be
-    %       more efficient. Prepending the destination (2nd element of a path)
-    %       is also not very clean.
+    %       required with the existing code, seems somewhat dirty.
+    %       
+    %       Also, the computation of the numbers of replications in the
+    %       existing code (pathsSampling.m) could be more efficient.
+    %
+    %       Prepending the destination (2nd element of a path) is also not very
+    %       clean.
 
     paths = sparse(paths);
 end

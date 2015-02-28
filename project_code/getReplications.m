@@ -4,8 +4,9 @@
 
 function replications = getReplications(paths, nDraws)
     %{
-    Returns the number of replications for each path for each observation. paths
-    is expected to be an array with the following structure:
+    Computes the number of replications for each path in paths (for each
+    path for each observation). paths is expected to be an array with the
+    following structure:
 
         [1st path for the 1st observation,
          2nd path for the 1st observation,
@@ -17,8 +18,8 @@ function replications = getReplications(paths, nDraws)
          ...,
          nDraws-th path for the last observation]
 
-    Returns the number of replications for each path in paths (in the form of an
-    array).
+    Returns the number of replications in the form of an array (aligned with
+    the array of paths passed in argument).
     %}
     nRows = size(paths, 1);
     obsID = floor(linspace(0, nRows - 1, nRows) / nDraws) + 1;
