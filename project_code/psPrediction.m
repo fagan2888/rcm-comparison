@@ -14,6 +14,7 @@ function psPrediction(betas, observations, nSamples, nDraws, resultsFile)
     TODO: Modify the function's signature so that it can handle noised betas.
     TODO: Get rid of the constants.
     %}
+
     USE_NOISE = false;
     N_DRAWS_PER_BETAS = nDraws;
     N_DRAWS_PREDICTION = nDraws;

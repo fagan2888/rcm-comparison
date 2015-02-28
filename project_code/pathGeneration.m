@@ -28,6 +28,7 @@ function paths = pathGeneration(observations, label, nDraws, samplingBetas, vara
                 structure array.
     - rngSeed:  One will be generated if not provided.
     %}
+
     CACHE_DIR = 'path_cache';
 
     rng('shuffle')

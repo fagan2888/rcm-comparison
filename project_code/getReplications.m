@@ -21,6 +21,7 @@ function replications = getReplications(paths, nDraws)
     Returns the number of replications in the form of an array (aligned with
     the array of paths passed in argument).
     %}
+    
     nRows = size(paths, 1);
     obsID = floor(linspace(0, nRows - 1, nRows) / nDraws) + 1;
     [~, indexes, indexes2] = unique([obsID', paths], 'rows');

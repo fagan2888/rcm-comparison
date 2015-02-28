@@ -10,6 +10,7 @@ function paths = getPaths(pathsStruct)
     in which case the paths will be retrieved recursively. This is pretty much
     why this function exists.
     %}
+    
     pathsArray = {};
     N = [];
     currentPathsStruct = pathsStruct;

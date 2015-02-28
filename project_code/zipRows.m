@@ -26,6 +26,7 @@ function matrix = zipRows(matrices, N)
     It is also assumed that the height of all the matrices are compatible with
     respect to N, that is #rows / n is the same for every matrix.
     %}
+    
     totalNumberOfRows = sum(arrayfun(@(x) size(x{:}, 1), matrices));
     maxWidth = max(arrayfun(@(x) size(x{:}, 2), matrices));
     matrix = zeros(totalNumberOfRows, maxWidth);
