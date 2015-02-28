@@ -20,7 +20,6 @@ function matrix = zipRows(matrices, N)
         - ...
 
     It is assumed that the height of matrix_i % n_i = 0.
-
     TODO: Not assume that height % n = 0 ?
 
     It is also assumed that the height of all the matrices are compatible with
