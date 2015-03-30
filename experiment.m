@@ -1,9 +1,9 @@
 % Author: Jean-Philippe Raymond (raymonjp@iro.umontreal.ca)
 % =========================================================
 
-
-RNG_SEED = 2015; % 4055. Used for partitionning of the observations into three
-                 % sets (training, validation and test). 
+% Seed used for the partitionning of the observations into three sets (training,
+% validation and test).
+RNG_SEED = 2015; % 4055. 
 
 OBS_FILE = 'data/observationsForEstimBAI.txt';
 TRAIN_SET_SIZE = 916; % ~50%
@@ -126,7 +126,7 @@ save('rlWithLinkSizeBetas.mat', 'estimatedBetas');
 
 % We generate paths for validation.
 %
-% TODO: Do the following with a loop.
+% TODO: Do with a loop.
 valid5 = pathGeneration(validSet, ...
                        sprintf('valid%d', RNG_SEED), ...
                        5, ...
