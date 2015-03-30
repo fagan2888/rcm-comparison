@@ -3,7 +3,7 @@
 
 
 function estimatedBetas = rlEstimation(observations, lsBetas)
-    % Es:timates the RL model with or without the link size (LS) attribute.
+    % Estimates the RL model with or without the link size (LS) attribute.
 
     loadProjectData();
 
