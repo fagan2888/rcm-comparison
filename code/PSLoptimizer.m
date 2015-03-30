@@ -2,6 +2,8 @@ function betas = PSLoptimizer(observations, paths, samplingBetas)
     %{
     samplingBetas: Parameters that were used to generate the choice sets and
                    that we use here for sampling correction.
+
+    TODO: Do we really need the observations here?
     %}
 
     ....
@@ -31,12 +33,11 @@ function betas = PSLoptimizer(observations, paths, samplingBetas)
     tic;
 
     loadPathSizeData(paths);
+    
     Obs = observations;
-    shape = size(Obs);
-    nbobs = shape(1);
+    nbobs = size(Obs, 1);
 
-    shape = size(paths);
-    nDraws = shape(1) / nbobs
+    nDraws = size(paths, 1) / nbobs;
 
     % reloadObservations(file_observations);
     idxObs = 1:nbobs;

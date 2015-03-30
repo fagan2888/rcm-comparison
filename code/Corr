@@ -76,7 +76,7 @@ function isDone = getPathAttributes()
     Atts = Atts';
     % Sampling correction
     beta = [-1.8,-0.9,-0.8,-4.0]';
-    loadData; % Recursive logit
+    loadData_; % Recursive logit
     Mfull = getM(beta,false);    
     M = Mfull(1:lastIndexNetworkState,1:lastIndexNetworkState); 
     M(:,lastIndexNetworkState+1) = sparse(zeros(lastIndexNetworkState,1));

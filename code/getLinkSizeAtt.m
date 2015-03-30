@@ -21,25 +21,25 @@ function ExpV_is_ok = getLinkSizeAtt(betas)
     M = Mfull(1:lastIndexNetworkState,1:lastIndexNetworkState); 
     M(:,lastIndexNetworkState+1) = sparse(zeros(lastIndexNetworkState,1));
     M(lastIndexNetworkState+1,:) = sparse(zeros(1, lastIndexNetworkState + 1));
-   
+
     for n = 1:nbobs
         n
         dest = Obs(n, 1);
         orig = Obs(n, 2);
-        if true %(expV0(dest) == 0)   
+        if true %(expV0(dest) == 0)
             M(1:lastIndexNetworkState ,lastIndexNetworkState + 1) = Mfull(:,dest);
-            [expV, expVokBool] = getExpV(M); % vector with value functions for given beta                                                                     
+            [expV, expVokBool] = getExpV(M); % vector with value functions for given beta
             if (expVokBool == 0)
                 ExpV_is_ok = false;
                 disp('ExpV is not fesible')
                 return; 
             end  
-            P = getP(expV, M);   
+            P = getP(expV, M);
         end
         G = sparse(zeros(size(expV)));
         G(orig) = 1;
         I = speye(size(P));
-        F = (I-P')\G;                        
+        F = (I-P')\G;
         if (min(F) < 0)                
             ToZero = find(F <= 0);
             for i=1:size(ToZero,1)

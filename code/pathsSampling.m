@@ -3,6 +3,12 @@
 % -------------------------------------------
 
 function samples = pathsSampling(observations, nDraws, betas, includeObs)
+
+    % TODO: As is, calling pathsSampling repeatedly, with the same observations
+    %       and betas, results in quite a bit of computation that is performed
+    %       more than once on the same data (in particular, the functions
+    %       loaddata and getP). For a few hundred observations, it seems to add
+    %       up to a waste of 5+ minutes per sample.
     
     if nargin < 4
         includeObs = true;
@@ -20,17 +26,17 @@ function samples = pathsSampling(observations, nDraws, betas, includeObs)
     global Alters;
     global isLinkSizeInclusive;
     
-    tic;    
+    tic;   
     
     maxPathLength = 500;
     beta = betas;
     % beta = [-1.8,-0.9,-0.8,-4.0]';
     % beta = [-1.0,-1.0,-1.0,-1.0]';
     isLinkSizeInclusive = false;
-    file_linkIncidence = 'data/linkIncidence.txt';
-    file_AttEstimatedtime = 'data/ATTRIBUTEestimatedtime.txt';
-    file_turnAngles = 'data/ATTRIBUTEturnangles.txt';
-    file_observations = 'data/observationsForEstimBAI.txt';
+    % file_linkIncidence = 'data/linkIncidence.txt';
+    % file_AttEstimatedtime = 'data/ATTRIBUTEestimatedtime.txt';
+    % file_turnAngles = 'data/ATTRIBUTEturnangles.txt';
+    % file_observations = 'data/observationsForEstimBAI.txt';
     
     loadData; % Recursive logit
 
@@ -57,13 +63,13 @@ function samples = pathsSampling(observations, nDraws, betas, includeObs)
         orig = Obs(n, 2);      
         % Get probabilities       
         M(1:lastIndexNetworkState ,lastIndexNetworkState + 1) = Mfull(:,dest);
-        [expV, expVokBool] = getExpV(M); % vector with value functions for given beta                                                                     
+        [expV, expVokBool] = getExpV(M); % vector with value functions for given beta
         if (expVokBool == 0)
            samples = [];
            disp('ExpV is not fesible')
            return; 
-        end  
-        P = getP(expV, M);   
+        end
+        P = getP(expV, M);
         Incidence(1:lastIndexNetworkState ,lastIndexNetworkState + 1) = incidenceFull(:,dest);
         dummy = lastIndexNetworkState + 1;
         choiceSet = zeros(nDraws,maxPathLength);

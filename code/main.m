@@ -1,6 +1,6 @@
 function betas = main(observations, lsBetas)
     %{
-    lsBetas: Parameters used to compute the link size attribute. The attribute
+    lsBetas: Parameters to use to compute the link size attribute. The attribute
              won't be used if lsBetas is not provided.
     %}
    
@@ -29,16 +29,16 @@ function betas = main(observations, lsBetas)
     global Gradient;
     global Obs;
     
-    isLinkSizeInclusive = nargin == 2;
-    file_linkIncidence = 'data/linkIncidence.txt';
-    file_AttEstimatedtime = 'data/ATTRIBUTEestimatedtime.txt';
-    file_turnAngles = 'data/ATTRIBUTEturnangles.txt';
-    file_observations = 'data/observationsForEstimBAI.txt';
+    isLinkSizeInclusive = nargin >= 2;
+    % file_linkIncidence = 'data/linkIncidence.txt';
+    % file_AttEstimatedtime = 'data/ATTRIBUTEestimatedtime.txt';
+    % file_turnAngles = 'data/ATTRIBUTEturnangles.txt';
+    % file_observations = 'data/observationsForEstimBAI.txt';
     % file_pathSampling = './Input/pathsSampling.txt';
     %file_observations = './simulatedData/Observations1000.txt';
 
     %loadPathSizeData;
-    Obs = observations;                                                   
+    Obs = observations;
     nbobs = size(Obs, 1);
     idxObs = 1:nbobs;
 

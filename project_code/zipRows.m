@@ -25,11 +25,18 @@ function matrix = zipRows(matrices, N)
     It is also assumed that the height of all the matrices are compatible with
     respect to N, that is #rows / n is the same for every matrix.
     %}
+
+    if size(matrices, 2) == 1
+        matrix = matrices{1};
+        return;
+    end
     
     totalNumberOfRows = sum(arrayfun(@(x) size(x{:}, 1), matrices));
     maxWidth = max(arrayfun(@(x) size(x{:}, 2), matrices));
     matrix = zeros(totalNumberOfRows, maxWidth);
 
+    % TODO: Possibly faster to use slicing. For each matrix, compute the indices
+    %       where its paths should be in the zipped matrix. Assign.
     cursor = 1;
     nIterations = size(matrices{1}, 1) / N(1);
     for i = 1:nIterations

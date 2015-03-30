@@ -23,7 +23,7 @@ function samples = altersSampling()
     file_turnAngles = './Input/ATTRIBUTEturnangles.txt';
     file_observations = './Input/observationsForEstimBAI.txt';
     
-    loadData; % Recursive logit
+    loadData_; % Recursive logit
 
     [lastIndexNetworkState, nsize] = size(incidenceFull);
     Obs = spconvert(load(file_observations));

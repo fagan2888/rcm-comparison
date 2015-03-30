@@ -24,6 +24,9 @@ function isDone = getPathAttributes(samplingBetas)
     lastIndexNetworkState = size(incidenceFull,1);
     lastDestNode = size(incidenceFull,2);
     disp('Calculating path size logit attributes ...');    
+    travelTime = max(EstimatedTime);
+    LC = max(LeftTurn); % TODO: Why does LC depend on LeftTurn?
+    %{
     I = find(EstimatedTime);
     J = find(LeftTurn);
     travelTime = zeros(size(EstimatedTime,2));
@@ -36,7 +39,8 @@ function isDone = getPathAttributes(samplingBetas)
     for i = 1: size(J,1);
        [k, a] =  ind2sub(size(LeftTurn), J(i));
        LC(a) = LeftTurn(k,a);
-    end    
+    end
+    %}
 %     nEles = nDraws + 1;
 %     choiceSet = zeros(size(Alters,1)+ nbobs, size(Alters,1));
 %     for n = 1:nbobs

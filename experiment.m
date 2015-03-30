@@ -1,44 +1,39 @@
-RNG_SEED = 4055; % 4055, 2014, 1213
+% Author: Jean-Philippe Raymond (raymonjp@iro.umontreal.ca)
+% =========================================================
+
+
+RNG_SEED = 2015; % 4055. Used for partitionning of the observations into three
+                 % sets (training, validation and test). 
 
 OBS_FILE = 'data/observationsForEstimBAI.txt';
-TRAIN_SET_SIZE = 1100; % ~60% (1100) 
-VALID_SET_SIZE = 366; % ~20% (366)  
-% TEST_SET_SIZE = 1832 - TRAIN_SET_SIZE - VALID_SET_SIZE; % ~20%
+TRAIN_SET_SIZE = 916; % ~50%
+VALID_SET_SIZE = 458; % ~25%
+% TEST_SET_SIZE = 1832 - TRAIN_SET_SIZE - VALID_SET_SIZE; % ~25%
 
-% =======================================================================
+% ===========================================================================
 % Parameters for EPS
-% -----------------------------------------------------------------------
-N_DRAWS_ESTIMATION = 50;
-N_DRAWS_PREDICTION = 5;
-N_DRAWS_PER_BETAS = 5;
-USE_NOISE = false;
-N_SAMPLES = 0; % No prediction will be done if set to zero.
-RESULTS_PS_FILE = 'output/resultsPS.txt';
-
-BETAS = [-1.8, -0.9, -0.8, -4.0]'; % The betas we use for path sampling during
-                                   % the EPS estimation.
+% ---------------------------------------------------------------------------
+BETAS = [-1.8, -0.9, -0.8, -4.0]; % The betas we use for path sampling during
+                                  % the EPS estimation.
 
 % The betas we use for prediction. They will be estimated if empty.
-% ESTIMATED_BETAS = [];
-ESTIMATED_BETAS = [-2.7814, -1.0224, -0.5453, -4.4426, 1.5654]'; % 4055
-% ESTIMATED_BETAS = [-2.7399, -1.0585, -0.5422, -4.2816, 1.4734]'; % 2014
-% ESTIMATED_BETAS = [-2.7573, -0.9818, -0.5496, -4.2807, 1.5135]'; % 1213
-% =======================================================================
-
+ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382]; % 2015
+% ESTIMATED_BETAS = [-2.7538, -0.9936, -0.5638, -4.4168, 1.5303]; % 2015-0
+% ESTIMATED_BETAS = [-2.7957, -1.0009, -0.5746, -4.3560, 1.6793]; % 2015-1
+% ESTIMATED_BETAS = [-2.7837, -1.0408, -0.5522, -4.5471, 1.6769]; % 4055
+% ESTIMATED_BETAS = [-2.7271, -1.0380, -0.5456, -4.5208, 1.5076]; % 4055-0
+% ESTIMATED_BETAS = [-2.7479, -1.0426, -0.5568, -4.5872, 1.5840]; % 4055-1
 % ===========================================================================
+
+% ================================================================================
 % Parameters for RL
-% ---------------------------------------------------------------------------
-LINK_SIZE_BETAS = [-2.5,-1,-0.4,-20]'; % [];
-PREDICTION_RL = false;
-RESULTS_RL_FILE = 'output/results/resultsRL.txt';
+% --------------------------------------------------------------------------------
+LINK_SIZE_BETAS = [-2.5,-1,-0.4,-20];
 
-ESTIMATED_BETAS_RL = [];
-% ESTIMATED_BETAS_RL = [-2.4680, -0.9356, -0.4103, -4.5455]'; % 4055
-% ESTIMATED_BETAS_RL = [-2.4014, -0.9871, -0.4234, -4.3860]'; % 2014
-% ESTIMATED_BETAS_RL = [-2.4166, -0.9120, -0.4276, -4.4041]'; % 1213
-% ESTIMATED_BETAS_RL = [-2.9806, -1.0744, -0.3580, -4.6282, -0.2361]'; % 4055
-% ESTIMATED_BETAS_RL = [-3.0001, -1.1073, -0.3575, -4.4415, -0.2140]'; % 2014
-% ===========================================================================
+ESTIMATED_BETAS_RL = [-2.4225, -0.9223, -0.4394, -4.3992]; % 2015
+% ESTIMATED_BETAS_RL = [-3.0416, -1.0571, -0.3720, -4.4641, -0.2309]; % 2015 w/ LS
+% ESTIMATED_BETAS_RL = [-2.4148, -0.9415, -0.4189, -4.5826]; % 4055
+% ================================================================================
 
 
 addpath('code');
@@ -46,7 +41,7 @@ addpath('project_code');
 
 rng(RNG_SEED);
 
-% We partition the observations into three sets (train, valid, test).
+% We partition the observations into three sets.
 myObs = spconvert(load(OBS_FILE));
 myObs = myObs(randperm(size(myObs, 1)), :); % Shuffling the observations.
 idxEndTrain = TRAIN_SET_SIZE;
@@ -55,95 +50,226 @@ trainSet = myObs(1:idxEndTrain, :);
 validSet = myObs(idxEndTrain+1:idxEndValid, :);
 testSet = myObs(idxEndValid+1:end, :);
 
-% rng('shuffle');
+% We generate paths for training.
+%
+% TODO: Do with a loop.
+train5 = pathGeneration(trainSet, ...
+                        sprintf('train%d', RNG_SEED), ...
+                        5, ...
+                        BETAS, ...
+                        true, ...
+                        'rngSeed', 20155);
 
-% If necessary, we estimate the EPS model.
-if isempty(ESTIMATED_BETAS)
-    estimatedBetas = psEstimation(trainSet, N_DRAWS_ESTIMATION, BETAS)
-else
-    estimatedBetas = ESTIMATED_BETAS;
-end
+train10 = pathGeneration(trainSet, ...
+                         sprintf('train%d', RNG_SEED), ...
+                         10, ...
+                         BETAS, ...
+                         false, ...
+                         'nest', train5, ...
+                         'rngSeed', 201510);
+
+train25 = pathGeneration(trainSet, ...
+                         sprintf('train%d', RNG_SEED), ...
+                         25, ...
+                         BETAS, ...
+                         false, ...
+                         'nest', train10, ...
+                         'rngSeed', 201525);
+
+train50 = pathGeneration(trainSet, ...
+                         sprintf('train%d', RNG_SEED), ...
+                         50, ...
+                         BETAS, ...
+                         false, ...
+                         'nest', train25, ...
+                         'rngSeed', 201550);
+
+train100 = pathGeneration(trainSet, ...
+                          sprintf('train%d', RNG_SEED), ...
+                          100, ...
+                          BETAS, ...
+                          false, ...
+                          'nest', train50, ...
+                          'rngSeed', 2015100);
+
+train250 = pathGeneration(trainSet, ...
+                          sprintf('train%d', RNG_SEED), ...
+                          250, ...
+                          BETAS, ...
+                          false, ...
+                          'nest', train100, ...
+                          'rngSeed', 2015250);
+
+train500 = pathGeneration(trainSet, ...
+                          sprintf('train%d', RNG_SEED), ...
+                          500, ...
+                          BETAS, ...
+                          false, ...
+                          'nest', train250, ...
+                          'rngSeed', 2015500);
+
+
+% =======================================================
+% We estimate the models.
+% -------------------------------------------------------
+paths = getPaths(train50);
+
+estimatedBetas = psEstimation(trainSet, paths, BETAS);
+save('betas50.mat', 'estimatedBetas');
+
+estimatedBetas = rlEstimation(trainSet);
+save('rlBetas.mat', 'estimatedBetas');
+
+estimatedBetas = rlEstimation(trainSet, LINK_SIZE_BETAS);
+save('rlWithLinkSizeBetas.mat', 'estimatedBetas');
+% =======================================================
+
+% We generate paths for validation.
+%
+% TODO: Do the following with a loop.
+valid5 = pathGeneration(validSet, ...
+                       sprintf('valid%d', RNG_SEED), ...
+                       5, ...
+                       ESTIMATED_BETAS, ...
+                       false, ...
+                       'rngSeed', 20155);
+
+valid10 = pathGeneration(validSet, ...
+                        sprintf('valid%d', RNG_SEED), ...
+                        10, ...
+                        ESTIMATED_BETAS, ...
+                        false, ...
+                        'nest', valid5, ...
+                        'rngSeed', 201510);
+
+valid25 = pathGeneration(validSet, ...
+                         sprintf('valid%d', RNG_SEED), ...
+                         25, ...
+                         ESTIMATED_BETAS, ...
+                         false, ...
+                         'nest', valid10, ...
+                         'rngSeed', 201525);
+
+valid50 = pathGeneration(validSet, ...
+                         sprintf('valid%d', RNG_SEED), ...
+                         50, ...
+                         ESTIMATED_BETAS, ...
+                         false, ...
+                         'nest', valid25, ...
+                         'rngSeed', 201550);
+
+valid100 = pathGeneration(validSet, ...
+                          sprintf('valid%d', RNG_SEED), ...
+                          100, ...
+                          ESTIMATED_BETAS, ...
+                          false, ...
+                          'nest', valid50, ...
+                          'rngSeed', 2015100);
+
+valid250 = pathGeneration(validSet, ...
+                          sprintf('valid%d', RNG_SEED), ...
+                          250, ...
+                          ESTIMATED_BETAS, ...
+                          false, ...
+                          'nest', valid100, ...
+                          'rngSeed', 2015250);
+
+% TODO: Take advantage of the nesting in the remainder of the pipeline, to avoid
+%       duplication of computation.
+
+paths = getPaths(valid5);
+nDraws = 5;
+model = 'ps'; % 'rl' or 'rlWithLS'
+
+% ===========================================================================
+% We compute the predictions and the losses with the path size logit model.
+% ---------------------------------------------------------------------------
+predictions = psPrediction(paths, nDraws, ESTIMATED_BETAS);
+
+pathsWithObservations = addObservationsToPaths(validSet, paths);
+
+predictionsWithObservations = psPrediction(pathsWithObservations, ...
+                                           nDraws + 1, ...
+                                           ESTIMATED_BETAS);
+
+    % =======================================================================
+    % We join the two predictions (we retrieve the probabilities from the 1st
+    % one and the utilities from the 2nd one).
+    % -----------------------------------------------------------------------
+    obsIDs1 = [predictions.obsID]';
+    paths1 = [predictions.path]';
+    obsIDs2 = [predictionsWithObservations.obsID]';
+    paths2 = [predictionsWithObservations.path]';
+    probabilities = [predictions.probability]';
+
+    nPaths1 = size(obsIDs1, 1);
+    pathWidth1 = size(paths1, 1) / nPaths1;
+    nPaths2 = size(obsIDs2, 1);
+    pathWidth2 = size(paths2, 1) / nPaths2;
+
+    paths1 = reshape(paths1, pathWidth1, nPaths1)';
+    paths2 = reshape(paths2, pathWidth2, nPaths2)';
+
+    % We pad paths1 with zeros so that it has the same width as paths2.
+    paths1(nPaths1, pathWidth2) = 0;
+
+    keys1 = [obsIDs1, paths1];
+    keys2 = [obsIDs2, paths2];
+
+    pred1Indices = ismember(keys2, keys1, 'rows');
+
+    newProbabilities = zeros(nPaths2, 1);
+    newProbabilities(pred1Indices) = probabilities;
+    cellNewProbabilities = num2cell(newProbabilities);
+    [predictionsWithObservations.probability] = cellNewProbabilities{:};
+
+    predictions = predictionsWithObservations;
+    % =======================================================================
+
+M = nPathsPerLink(pathsWithObservations, nDraws + 1);
+validSetUtilities = psUtilitiesForObservations(validSet, ESTIMATED_BETAS, M);
+
+l = losses(validSetUtilities, predictionsWithObservations);
+mean(l)
+% ===========================================================================
 
 %{
-We apply the PS  model on some set of observations N_SAMPLES times. The
-output (generated paths and their probabilities) is saved in RESULTS_PS_FILE.
-%}
-if N_SAMPLES > 0
-    psPrediction(estimatedBetas, validSet, N_SAMPLES, N_DRAWS_PREDICTION, RESULTS_PS_FILE);
-end
-
-% If necessary, we estimate the RL model with or without the link size (LS) attribute.
-if isempty(ESTIMATED_BETAS_RL)
-    if isempty(LINK_SIZE_BETAS) % Without LS.
-        estimatedBetasRL = rlEstimation(trainSet);
-    else % With LS.
-        estimatedBetasRL = rlEstimation(trainSet, LINK_SIZE_BETAS);
-    end
+% =========================================================================
+% We compute the predictions and the losses with the recursive logit model.
+% -------------------------------------------------------------------------
+if ~strcmp(model, 'rlWithLS') % model == 'rl'
+    predictions = rlPredictionForPaths(paths, nDraws, ESTIMATED_BETAS_RL);
+    % TODO: Only compute the following for observations that aren't in the
+    %       choice sets (paths) ...
+    %
+    %       ... and only once for each validSet.
+    [validSetUtilities, ~] = rlPrediction(validSet, ESTIMATED_BETAS_RL);
 else
-    estimatedBetasRL = ESTIMATED_BETAS_RL;
+    predictions = rlPredictionForPaths(paths, ...
+                                       nDraws, ...
+                                       ESTIMATED_BETAS_RL, ...
+                                       LINK_SIZE_BETAS);
+    [validSetUtilities, ~] = rlPrediction(validSet, ...
+                                          ESTIMATED_BETAS_RL, ...
+                                          LINK_SIZE_BETAS);
 end
 
-% TODO : Put in a function.
-if PREDICTION_RL
-    global incidenceFull;
-    global Obs;
-    global LinkSize;
+l = losses(validSetUtilities, predictions);
+mean(l)
+% =========================================================================
+%}
 
-    global file_linkIncidence;
-    global file_AttEstimatedtime;
-    global file_turnAngles;
-    global LSatt;
-    global isLinkSizeInclusive;
-
-    file_linkIncidence = 'data/linkIncidence.txt';
-    file_AttEstimatedtime = 'data/ATTRIBUTEestimatedtime.txt';
-    file_turnAngles = 'data/ATTRIBUTEturnangles.txt';
-
-    isLinkSizeInclusive = false;
-
-    Obs = trainSet;
-    loadData;
-    lastIndexNetworkState = size(incidenceFull, 1);
-
-    results = [];
-
-    for i = 1:testSetSize
-        i
-        
-        if isLinkSizeInclusive
-            LinkSize = LSatt(i).value;
-        end
-        
-        Mfull = getM(estimatedBetasRL, isLinkSizeInclusive);    
-        M = Mfull(1:lastIndexNetworkState,1:lastIndexNetworkState);
-        M(:,lastIndexNetworkState+1) = sparse(zeros(lastIndexNetworkState,1));
-        M(lastIndexNetworkState+1,:) = sparse(zeros(1, lastIndexNetworkState + 1));
-        
-        dest = Obs(i, 1);
-        M(1:lastIndexNetworkState ,lastIndexNetworkState + 1) = Mfull(:,dest);
-        
-        expV = getExpV(M);
-        P = getP(expV, M);
-        path = Obs(i, 2:end);
-        lnP = 0.0;
-        p = 1.0;
-        j = 1;
-        k = path(j);
-        while true
-            j = j + 1;
-            k_ = path(j);
-            if k_ ~= dest
-                lnP = lnP + log(P(k, k_));
-                k = k_;
-            else
-                break;
-            end
-        end
-        results(i) = exp(lnP);
-
-    end
-
-    txtFile = fopen(RESULTS_RL_FILE, 'w');
-    fprintf(txtFile, '%d\n', results);
-    fclose(txtFile);
+% We save the predictions.
+if strcmp(model, 'ps')
+    betas = ESTIMATED_BETAS;
+else
+    betas = ESTIMATED_BETAS_RL;
 end
+fileID = sprintf('valid%d_%s_%d_%s_%s', ...
+             RNG_SEED, ...
+             [int2str(RNG_SEED), int2str(nDraws)], ...
+             nDraws, ...
+             model, ...
+             floatsToString(betas'));
+save(['results/', fileID, '.mat'], 'predictions');
+save(['results/', fileID, '_Observations.mat'], 'validSetUtilities');

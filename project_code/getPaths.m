@@ -10,14 +10,14 @@ function paths = getPaths(pathsStruct)
     in which case the paths will be retrieved recursively. This is pretty much
     why this function exists.
     %}
-    
+
     pathsArray = {};
     N = [];
     currentPathsStruct = pathsStruct;
     while true
-        pathsArray = [pathsArray, {currentPathsStruct.paths}];
+        pathsArray = [{currentPathsStruct.paths}, pathsArray];
         if isempty(currentPathsStruct.nestFile)
-            N = [N, currentPathsStruct.nDraws];
+            N = [currentPathsStruct.nDraws, N];
             break;
         else
             nDraws = currentPathsStruct.nDraws;
@@ -25,16 +25,13 @@ function paths = getPaths(pathsStruct)
             cachedVariables = load(currentPathsStruct.nestFile);
             currentPathsStruct = cachedVariables.paths;
 
-            N = [N, nDraws - currentPathsStruct.nDraws];
+            N = [nDraws - currentPathsStruct.nDraws, N];
         end
     end
 
     paths = zipRows(pathsArray, N);
 
-    % Computing the numbers of replications (the first element of each path).
-    paths = paths(:, 2:end);
-    replications = getReplications(paths, pathsStruct.nDraws);
-    paths = [replications, paths];
+    paths = updateReplications(paths, pathsStruct.nDraws);
     
     % TODO: Having a number of replications prepended to every path, as
     %       required with the existing code, seems somewhat dirty.
@@ -44,6 +41,6 @@ function paths = getPaths(pathsStruct)
     %
     %       Prepending the destination (2nd element of a path) is also not very
     %       clean.
-
+    
     paths = sparse(paths);
 end
