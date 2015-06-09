@@ -9,5 +9,5 @@ function [unqPaths, unqIndices, pathToUnqIndiceMap] = uniquePaths(paths, nDraws)
 
     nObservations = size(paths, 1) / nDraws;
     obsIDs = observationIDs(nObservations, nDraws);
-    [unqPaths, unqIndices, pathToUnqIndiceMap] = unique([obsIDs', paths], 'rows');
+    [unqPaths, unqIndices, pathToUnqIndiceMap] = unique([obsIDs', paths], 'rows', 'first');
 end

@@ -26,6 +26,11 @@ function predictions = psPrediction(paths, nDraws, betas)
     % TODO: Duplicate paths should probably be filtered out as early as possible
     %       in the pipeline (as early as in pathGeneration.m).
     [uPaths, uniqueIndices] = uniquePaths(paths, nDraws);
+    
+    % Preserving the original order.
+    temp = sortrows([uniqueIndices, uPaths], 1);
+    uPaths = temp(:, 2:end);
+    uniqueIndices = temp(:, 1);
 
     %{
     Comptuting pathStrings is too costly. It makes the computation time of this

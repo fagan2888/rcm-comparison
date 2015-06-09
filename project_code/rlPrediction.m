@@ -31,39 +31,47 @@ function [utilities, probabilities] = rlPrediction(observations, betas, lsBetas)
     probabilities = zeros(nObservations, 1);
 
     lastIndexNetworkState = size(incidenceFull, 1);
-
-    % TODO: Profile and speed up!!!
-    
+   
     transitionUtilitiesFromRegularAttributes = getMRegular(betas');
+    if ~useLinkSize
+        Mfull = incidenceFull .* exp(transitionUtilitiesFromRegularAttributes);
+    end
 
+    previousDestination = -1;
     for i = 1:nObservations
         i
         transitionUtilities = transitionUtilitiesFromRegularAttributes;
         
         if useLinkSize
-            % TODO: Get rid of that global LinkSize variable.
+            % TODO: Get rid of that global linkSize variable.
 
             linkSize = LSatt(pathToUniqueIndiceMap(i)).value;
             transitionUtilities = transitionUtilities + getMLinkSize(betas(5), linkSize);
+            Mfull = incidenceFull .* exp(transitionUtilities);
         end
         
-        Mfull = incidenceFull .* exp(transitionUtilities);
-        
-        % We format M (to match the specifications required by getExpV.m and getP.m ?).
-        M = Mfull(1:lastIndexNetworkState, 1:lastIndexNetworkState);
-        M(:, lastIndexNetworkState + 1) = sparse(zeros(lastIndexNetworkState, 1));
-        M(lastIndexNetworkState + 1, :) = sparse(zeros(1, lastIndexNetworkState + 1));
-
-        % We further format M, based on the current destination.
         destination = observations(i, 1);
-        M(1:lastIndexNetworkState, lastIndexNetworkState + 1) = Mfull(:, destination);
+        if destination ~= previousDestination
+            % No need to do this long computation if we just dit it, which happens a lot
+            % in the typical use cases.
 
-        expV = getExpV(M); % TODO What is this?
-        P = getP(expV, M); % State-transition matrix.
+            % We format M (to match the specifications required by getExpV.m and getP.m ?).
+            M = Mfull(1:lastIndexNetworkState, 1:lastIndexNetworkState);
+            M(:, lastIndexNetworkState + 1) = sparse(zeros(lastIndexNetworkState, 1));
+            M(lastIndexNetworkState + 1, :) = sparse(zeros(1, lastIndexNetworkState + 1));
+
+            % We further format M, based on the current destination.
+            M(1:lastIndexNetworkState, lastIndexNetworkState + 1) = Mfull(:, destination);
+
+            expV = getExpV(M); % TODO What is this?
+            P = getP(expV, M); % State-transition matrix.
+
+            previousDestination = destination;
+        end
         
         path = observations(i, 2:end);
         
-        % TODO: Get rid of the loop.
+        % TODO: Get rid of the loop if possible.
         utility = 0.0;
         lnP = 0.0;
         j = 1;
