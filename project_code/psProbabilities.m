@@ -77,6 +77,7 @@ function probabilities = psProbabilities_(observations, ...
         probabilities(i) = probaInclusion * averageProba;
         probasToSave(i) = {probas_};
     end
+    
     % TODO: Make probas a return value.
     probas = probasToSave;
     save('proba_cache/probas500.mat', 'probas');
