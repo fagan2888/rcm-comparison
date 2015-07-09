@@ -1,0 +1,142 @@
+
+\documentclass[12pt,a4paper]{article}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{pst-node}
+\usepackage{pst-plot}
+\usepackage{pstricks}
+\usepackage{graphicx}
+
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+%\input{tcilatex}
+
+\newcommand{\footnoteremember}[2]{
+\footnote{#2}
+  \newcounter{#1}
+  \setcounter{#1}{\value{footnote}}
+}
+\newcommand{\footnoterecall}[1]{
+\footnotemark[\value{#1}]
+}
+
+
+
+\begin{document}
+\begin{titlepage}
+\title{A cross-validation approach for discrete choice models with sampled choice sets}
+\author{Eric Larsen\footnoteremember{dirocirrelt}{Department of Computer Science and Operational Research, Universit\'e de Montr\'eal and CIRRELT, Canada} \and Jean-Philippe Raymond\footnoterecall{dirocirrelt} \and Emma Frejinger\footnoterecall{dirocirrelt} \and Angelo Guevara\footnote{Facultad de Ingenier’a y Ciencias Aplicadas, Universidad de los Andes, Chile}}
+\maketitle
+
+\noindent Keywords: discrete choice, sampling of alternatives, out-of-sample validation, cross-validation, prediction
+
+\begin{abstract}
+[TO BE WRITTEN LAST]
+\end{abstract}
+
+\end{titlepage}
+
+
+\section{Introduction} \label{sec:introduction}
+[THE INTRODUCTION IS NOT UP TO DATE, UPDATE AFTER COMPLETING THE OTHER SECTIONS]
+Cross-validation can be used to assess and compare models' predictive performances. In brief, it consists in repeatedly partitioning a set of observations into two subsets: one used to estimate the models (training set) and one used to apply the models (validation set).  A performance measure based on predicted choice probabilities is used to estimate the model's (out-of-sample) fit on the validation set. The issue using sampled choice sets is that the choice probabilities cannot be evaluated unless the observed alternative has been sampled. For estimation, chosen alternatives are added (with probability one) but that cannot be done in cross-validation since that would not correspond to a true prediction setting.
+
+This paper makes two important contributions. First, we propose a loss-function as a performance measure for cross-validation that is well defined independently of the observed alternatives being sampled or not. The idea lies in using utilities as reference instead of probabilities since they can be evaluated independently of the choice set. Second, we show how the approach can be used to compare the predictive performance of path-based route choice models with sampled choice sets with a link-based recursive logit (RL) model (universal choice set). 
+
+There has been recent advances on choice set sampling for consistent estimation of multivariate extreme value, mixed logit and random regret minimization models applied in different contexts, e.g. location and route choice (\cite{FrejBierBenA09,GuevBenA13,GuevBenA13mixed,GuevChorBenA14}). These studies focus on deriving a sampling correction of utilities such that the pseudo maximum likelihood  estimator is consistent. While numerous studies focus on the estimation problem, we are not aware of any literature [OR SAY FEW, CF LIT REVIEW] focusing on validation using sampled choice sets. The validation step is important to check for over fitting and compare models' predictive performance. Our approach can be used for that purpose and it is relevant to any application that has universal choice sets that are too large to be practically feasible to deal with, or even too large to be enumerated (e.g. route choice application).
+
+[ADD LITERATURE REVIEW]
+\cite{BenALerm85}, \cite{KeanWolp07}. 
+
+[BRIEF DESCRIPTION OF CONTRIBUTIONS]
+
+[STRUCTURE OF THE PAPER]
+
+
+
+\section{Cross-validation} \label{sec:cross validation}
+Content
+\begin{itemize}
+\item General description of cross-validation and some key references
+\item Introduce notation for iterations, samples, loss function
+\item A brief note that samples can be drawn in different ways and how we do.
+\end{itemize}
+
+Some notes from the past:
+\begin{itemize}
+\item Check paper Efron and Tibshirani (1997) Improvements on cross-validation: The 632+ bootstrap method
+\item Literature using discrete choice or dynamic discrete choice models and cross validation or out-of-sample validation \cite{KeanWolp07}
+\item Review briefly other literature using cross-validation. E.g. Kohavi (1995) A study of cross-validation and bootstrap from accuracy estimation and model selection.
+\item Describe the approach in a general way, application to any choice context where sampled alternatives are used.
+\end{itemize}
+
+
+\section{Pseudo maximum likelihood estimation}
+Description and references to known results on sampling of alternatives and pseudo max ll estimation of discrete choice models \citep[][]{McFa78,GuevBenA13,GuevBenA13mixed}.
+
+
+Notes on notation (try to follow earlier papers by Angelo and Emma)
+\begin{itemize}
+\item Alternative $i$ or $j$, individual $n$, utility $U_{in}$
+\item True choice set $C_n$, $|C_n|=J_n$ sampled choice set $D_n$, sampling correction $\pi(D_n|j)$
+\item $N$ number of observations (TBD: is $n$ and individual or observation)
+\end{itemize}
+
+
+\section{Loss functions and their convergence}
+Content based on Eric's document.
+
+\section{Route choice models with sampled choice sets}
+Content (things about route choice that is not directly related to the numerical results)
+\begin{itemize}
+\item Give background and references
+\item Challenging application because universal choice set cannot be enumerated 
+\item Sampling correction, old and new one
+\item Numerical comparison of old and new one
+\end{itemize}
+
+\section{Route choice model application} \label{sec:routechoice}
+Content
+\begin{itemize}
+\item Description of data and experimental setup
+\item Objective of the cross-validation: compare path-based and link-based models
+\item Loss functions that are appropriate for this setting
+\item Numerical results
+\item Analysis of the different loss-functions and their convergence, computational time...
+\end{itemize}
+
+
+\section{Conclusions and future work} \label{sec:conclusions}
+
+
+\bibliographystyle{dcu}
+\bibliography{refs}
+
+\end{document}
+
