@@ -86,7 +86,10 @@ function isDone = getPathAttributes(samplingBetas)
     end
     Atts = Atts';
     disp(size(Atts));
+    
     % Sampling correction
+
+    % Version originale
     % beta = [-1.8,-0.9,-0.8,-4.0]';
     beta = samplingBetas;
     % loadData; % Recursive logit
@@ -109,6 +112,7 @@ function isDone = getPathAttributes(samplingBetas)
         end  
         P = getP(expV, M);
        % Pro(n) = P;
+        % TODO: How prob is used is weird.
         prob = zeros(nDraws, 1);
         for i = (n-1)*nDraws+1: n * nDraws
            path = Alters(i,:);
@@ -122,8 +126,30 @@ function isDone = getPathAttributes(samplingBetas)
         end
         prob = prob /sum(prob);
         for i = (n-1)*nDraws+1: n * nDraws
+            i
             Corr(i) = Corr(i) - log(prob(i));
+            % Corr(i) = -1.0 * Corr(i);
         end
     end
+
+    %{
+    % Version "exhaustive"
+    for n = 1:nbobs
+        n
+        endIndex = n * nDraws;
+        startIndex = endIndex - nDraws + 1;
+        
+        paths = Alters(startIndex:endIndex, :);
+        otherPaths = paths(2:nDraws, :);
+
+        for i = startIndex:endIndex
+            i
+            paths = vertcat(paths(i - startIndex + 1, :),  otherPaths);
+            Corr(i) = log(choiceSetProbabilityGivenObs(paths, samplingBetas));
+            % Corr(i) = -1.0 * Corr(i);
+        end
+    end
+    %}
+    
     isDone = true;
 end

@@ -2,11 +2,11 @@
 % =========================================================
 
 
-function probabilities = psProbabilities(observations, ...
-                                         betas, ...
-                                         nDraws, ...
-                                         terminationCriteriaHandle, ...
-                                         savedIterationProbabilities)
+function [probabilities, iterationProbabilities] = psProbabilities(observations, ...
+                                                                   betas, ...
+                                                                   nDraws, ...
+                                                                   terminationCriteriaHandle, ...
+                                                                   previousIterationProbabilities)
     %{
     TODO: Bla bla bla ...
     %}
@@ -25,7 +25,7 @@ function probabilities = psProbabilities(observations, ...
         disp(sprintf('Estimating probability for observation #%d ...', i));
 
         if useCache
-            cache = cell2mat(savedIterationProbabilities(i));
+            cache = cell2mat(previousIterationProbabilities(i));
         end
 
         probaInclusion = 0.0;
@@ -39,46 +39,33 @@ function probabilities = psProbabilities(observations, ...
                 probaInclusion = 1.0 - (1.0 - rlProbability)^nDraws;
             end
             
-            if useCache & size(cache, 1) >= j
-                logProbaChoiceSet = cache(j, 1);
-                probaObservation = cache(j, 2);
+            if useCache & size(cache, 2) >= j
+                probaObservation = cache(j);
             else
                 paths = pathsSampling(obs, nDraws, betas, true);
-                
-                % TODO: The probabilities were already computed in pathsSampling.
-                %       Refactor.
-                [~, rlProbabilities] = rlPrediction(paths(:, 2:end), betas);
-                
-                logProbaChoiceSet = sum(log(rlProbabilities));
+                [~, uniqueIndices] = unique(paths, 'rows');                
 
                 predictions = psPrediction(paths, nDraws, betas);
                 probaObservation = predictions(1).probability;
             end
 
-            probas(j, 1:2) = {logProbaChoiceSet, probaObservation};
+            probas(j) = {probaObservation};
 
             %{
             TODO: Might very well be faster to use a standard array even though
                   growing a cell array is faster than growing a standard array.
             %}           
             probas_ = cell2mat(probas);
-            maxLogProbaChoiceSets = max(probas_(:, 1));
-            movedProbaChoiceSets = exp(probas_(:, 1) - maxLogProbaChoiceSets);
-            normalizedProbaChoiceSets = exp(probas_(:, 1) - maxLogProbaChoiceSets - log(sum(movedProbaChoiceSets)));
-            averageProba = dot(normalizedProbaChoiceSets, probas_(:, 2));
+            averageProba = mean(probas_);
                         
             disp(' ');
             disp(sprintf('Probability from sample #%d: %f', j, probaObservation));
-            disp(sprintf('Weighted average of the probabilities: %f', averageProba));            
+            disp(sprintf('Average of the probabilities: %f', averageProba));            
             disp(' ');
 
             j = j + 1;
         end
         probabilities(i) = probaInclusion * averageProba;
-        probasToSave(i) = {probas_};
-    end
-    
-    % TODO: Make probas a return value.
-    probas = probasToSave;
-    save('proba_cache/probas500.mat', 'probas');
+        iterationProbabilities(i) = {probas_};
+    end    
 end

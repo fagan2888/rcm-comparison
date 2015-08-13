@@ -4,7 +4,7 @@
 
 % TODO: Find a name for this novel loss function :)
 
-function l = losses(obsUtilities, predictions)
+function L = losses(obsUtilities, predictions)
     %{
     Evaluates the loss for each observation. The loss depends on the predictions
     associated with it (a set of alternatives with their associated utilities
@@ -31,5 +31,5 @@ function l = losses(obsUtilities, predictions)
 
     tailIndices = find(utilities' > obsUtilities(obsIDs));
     
-    l = accumarray(full(obsIDs(tailIndices))', probabilities(tailIndices)');
+    L = accumarray(full(obsIDs(tailIndices))', probabilities(tailIndices)');
 end
