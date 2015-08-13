@@ -37,7 +37,6 @@ rng('shuffle');
 % We estimate the probabilities using 5 iterations for each observation.
 % -----------------------------------------------------------------------------
 nDraws = 5;
-%{
 nIterations = 5;
 terminationCriteria = @(x) fixedNumberOfIterationsCriteria(x, nIterations);
 
@@ -47,12 +46,11 @@ terminationCriteria = @(x) fixedNumberOfIterationsCriteria(x, nIterations);
                                                           terminationCriteria);
 save('psProbabilities5.mat', 'probabilities', 'iterationProbabilities');
 % =============================================================================
-%}
 
-% =======================================================================================
+% ================================================================================================
 % We estimate the probabilities using 10 iterations for each observation,
 % re-using the probabilities from the 5 previous iterations.
-% -----------------------------------------------------------------------------
+% ------------------------------------------------------------------------------------------------
 nIterations = 10;
 terminationCriteria = @(x) fixedNumberOfIterationsCriteria(x, nIterations);
 
@@ -64,4 +62,4 @@ cachedVariables = load('psProbabilities5.mat');
                                                           terminationCriteria, ...
                                                           cachedVariables.iterationProbabilities);
 save('psProbabilities10.mat', 'probabilities', 'iterationProbabilities');
-% =======================================================================================
+% ================================================================================================

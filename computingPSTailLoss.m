@@ -43,6 +43,7 @@ paths = getPaths(valid5);
 %       should be put in one or several functions (in /project_code).
 
 predictions = psPrediction(paths, 5, ESTIMATED_BETAS);
+
 pathsWithObservations = addObservationsToPaths(validSet, paths);
 predictionsWithObservations = psPrediction(pathsWithObservations, ...
                                            5 + 1, ...
@@ -87,5 +88,5 @@ loss = mean(losses(utilities, predictionsWithObservations));
 
 disp(sprintf('Tail loss for the PS model: %f', loss));
 
-save('someUtilities.mat', 'utilities');
-save('somePredictions.mat', 'predictionsWithObservations');
+save('utilitiesOfTheObservations.mat', 'utilities');
+save('predictionsForTheAlternatives.mat', 'predictions');

@@ -7,7 +7,7 @@ LINK_SIZE_BETAS = [-2.5, -1.0, -0.4, -20.0];
 
 % Seed used for the partitionning of the observations into three sets (training,
 % validation and test).
-RNG_SEED = 2015;% 2015, 4055, 1234, 1107
+RNG_SEED = 2015; % 2015, 4055, 1234, 1107
 
 OBS_FILE = 'data/observationsForEstimBAI.txt';
 TRAIN_SET_SIZE = 916; % ~50%

@@ -10,7 +10,7 @@ ESTIMATED_BETAS_LS = [-3.0416, -1.0571, -0.3720, -4.4641, -0.2309];
 
 % Seed used for the partitionning of the observations into three sets (training,
 % validation and test).
-RNG_SEED = 2015;% 2015, 4055, 1234, 1107
+RNG_SEED = 2015; % 2015, 4055, 1234, 1107
 
 OBS_FILE = 'data/observationsForEstimBAI.txt';
 TRAIN_SET_SIZE = 916; % ~50%
