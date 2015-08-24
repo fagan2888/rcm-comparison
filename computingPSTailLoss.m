@@ -2,9 +2,10 @@
 % =========================================================
 
 
-ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382]; % 2015
+% ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382]; % 2015
+ESTIMATED_BETAS = [-2.7538, -0.9936, -0.5638, -4.4168, 1.5303]; % 2015-0 
 
-N_DRAWS = 5;
+N_DRAWS = 500;
 
 % Seed used for the partitionning of the observations into three sets (training,
 % validation and test).
