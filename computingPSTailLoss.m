@@ -2,8 +2,10 @@
 % =========================================================
 
 
-ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382];
+% ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382]; % 2015
+ESTIMATED_BETAS = [-2.7538, -0.9936, -0.5638, -4.4168, 1.5303]; % 2015-0
 
+N_DRAWS = 500;
 
 % Seed used for the partitionning of the observations into three sets (training,
 % validation and test).
@@ -31,22 +33,22 @@ validSet = myObs(idxEndTrain+1:idxEndValid, :);
 testSet = myObs(idxEndValid+1:end, :);
 
 
-valid5 = pathGeneration(validSet, ...
-                        sprintf('valid%d', RNG_SEED), ...
-                        5, ...
-                        ESTIMATED_BETAS, ...
-                        false, ...
-                        'rngSeed', 20155);
-paths = getPaths(valid5);
+valid = pathGeneration(validSet, ...
+                       sprintf('valid%d', RNG_SEED), ...
+                       N_DRAWS, ...
+                       ESTIMATED_BETAS, ...
+                       false, ...
+                       'rngSeed', 20150500);
+paths = getPaths(valid);
 
 % TODO: Most of the following is way too involved to be in a user script. It
 %       should be put in one or several functions (in /project_code).
 
-predictions = psPrediction(paths, 5, ESTIMATED_BETAS);
+predictions = psPrediction(paths, N_DRAWS, ESTIMATED_BETAS);
 
 pathsWithObservations = addObservationsToPaths(validSet, paths);
 predictionsWithObservations = psPrediction(pathsWithObservations, ...
-                                           5 + 1, ...
+                                           N_DRAWS + 1, ...
                                            ESTIMATED_BETAS);
 
 % ================================================================================
@@ -73,20 +75,22 @@ paths1(nPaths1, pathWidth2) = 0;
 keys1 = [obsIDs1, paths1];
 keys2 = [obsIDs2, paths2];
 
-pred1Indices = ismember(keys2, keys1, 'rows');
+[~, pred1Indices] = ismember(keys2, keys1, 'rows');
 
 newProbabilities = zeros(nPaths2, 1);
-newProbabilities(pred1Indices) = probabilities;
-cellNewProbabilities = num2cell(newProbabilities);
+newProbabilities(pred1Indices ~= 0, 1) = probabilities(pred1Indices(pred1Indices ~= 0));
+
+cellNewProbabilities = num2cell(newProbabilities, 2);
 [predictionsWithObservations.probability] = cellNewProbabilities{:};
 % ================================================================================
 
-M = nPathsPerLink(pathsWithObservations, 5 + 1);
+M = nPathsPerLink(pathsWithObservations, N_DRAWS + 1);
 utilities = psUtilitiesForObservations(validSet, ESTIMATED_BETAS, M);
 
 loss = mean(losses(utilities, predictionsWithObservations));
 
 disp(sprintf('Tail loss for the PS model: %f', loss));
 
+predictions = predictionsWithObservations;
 save('utilitiesOfTheObservations.mat', 'utilities');
 save('predictionsForTheAlternatives.mat', 'predictions');

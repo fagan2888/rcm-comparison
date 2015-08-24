@@ -3,6 +3,7 @@
 
 
 ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382];
+N_DRAWS = 5;
 
 LINK_SIZE_BETAS = [-2.5, -1.0, -0.4, -20.0];
 
@@ -39,19 +40,19 @@ testSet = myObs(idxEndValid+1:end, :);
 % We generate paths for validation.
 valid5 = pathGeneration(validSet, ...
                         sprintf('valid%d', RNG_SEED), ...
-                        5, ...
+                        N_DRAWS, ...
                         ESTIMATED_BETAS, ...
                         false, ...
                         'rngSeed', 20155);
 paths = getPaths(valid5);
 
 % We compute the loss for the "without-LinkSize" model.
-predictions = rlPredictionForPaths(paths, 5, ESTIMATED_BETAS_RL);
+predictions = rlPredictionForPaths(paths, N_DRAWS, ESTIMATED_BETAS_RL);
 [utilities, ~] = rlPrediction(validSet, ESTIMATED_BETAS_RL);
 loss = mean(losses(utilities, predictions));
 
 % We compute the loss for the "with-LinkSize" model.
-predictions = rlPredictionForPaths(paths, 5, ESTIMATED_BETAS_RL_LS, LINK_SIZE_BETAS);
+predictions = rlPredictionForPaths(paths, N_DRAWS, ESTIMATED_BETAS_RL_LS, LINK_SIZE_BETAS);
 [utilities, ~] = rlPrediction(validSet, ESTIMATED_BETAS_RL_LS, LINK_SIZE_BETAS);
 lossLS = mean(losses(utilities, predictions));
 

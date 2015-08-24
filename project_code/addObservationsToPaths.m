@@ -12,7 +12,7 @@ function pathsWithObservations = addObservationsToPaths(observations, paths)
 
     observations = [ones(nObservations, 1), observations];
 
-    pathsWithObservations = zipRows([{observations}, {paths}], [1, nDraws]);
+    pathsWithObservations = zipRows([{observations}, {paths}], [1, nDraws]); 
     pathsWithObservations = updateReplications(pathsWithObservations, nDraws + 1);
     pathsWithObservations = sparse(pathsWithObservations);
 end
