@@ -50,10 +50,10 @@ predictionsWithObservations = psPrediction(pathsWithObservations, ...
                                            N_DRAWS + 1, ...
                                            ESTIMATED_BETAS);
 
-% ================================================================================
+% ======================================================================================
 % We join the two predictions (we retrieve the probabilities from the 1st one
 % (predictions) and the utilities from the 2nd one (predictionsWithObservations)).
-% --------------------------------------------------------------------------------
+% --------------------------------------------------------------------------------------
 obsIDs1 = [predictions.obsID]';
 paths1 = [predictions.path]';
 obsIDs2 = [predictionsWithObservations.obsID]';
@@ -81,7 +81,7 @@ newProbabilities(pred1Indices ~= 0, 1) = probabilities(pred1Indices(pred1Indices
 
 cellNewProbabilities = num2cell(newProbabilities, 2);
 [predictionsWithObservations.probability] = cellNewProbabilities{:};
-% ================================================================================
+% ======================================================================================
 
 M = nPathsPerLink(pathsWithObservations, N_DRAWS + 1);
 utilities = psUtilitiesForObservations(validSet, ESTIMATED_BETAS, M);
