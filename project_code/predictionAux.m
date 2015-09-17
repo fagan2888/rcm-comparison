@@ -2,7 +2,7 @@
 % =========================================================
 
 
-function predictions = predictionAux(uniquePaths, utilities, probabilities)
+function predictions = predictionAux(uniquePaths, counts, utilities, probabilities)
     %{
     Packages prediction's results in a nice array of structure arrays (see
     predictionsStruct.m.
@@ -13,9 +13,12 @@ function predictions = predictionAux(uniquePaths, utilities, probabilities)
     obsIDs = uniquePaths(:, 1);
     cellObsIDs = num2cell(obsIDs);
     [predictions.obsID] = cellObsIDs{:};
-    
-    cellPaths = num2cell(uniquePaths(:, 4:end), 2);
+
+    cellPaths = num2cell(uniquePaths(:, 3:end), 2);
     [predictions.path] = cellPaths{:};
+
+    cellCounts = num2cell(counts);
+    [predictions.count] = cellCounts{:};
 
     cellUtilities = num2cell(utilities);
     [predictions.utility] = cellUtilities{:};

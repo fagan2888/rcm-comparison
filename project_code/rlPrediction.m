@@ -39,7 +39,7 @@ function [utilities, probabilities] = rlPrediction(observations, betas, lsBetas)
 
     previousDestination = -1;
     for i = 1:nObservations
-        i;
+        i
         transitionUtilities = transitionUtilitiesFromRegularAttributes;
         
         if useLinkSize

@@ -7,6 +7,8 @@ function probability = choiceSetProbabilityGivenObs_(paths, betas)
     Following "Sampling of alternatives for route choice modeling, Frejinger,
     Bierlaire, and Ben-Akiva, 2009".
 
+    It is assumed that the observation is the first path (in paths).
+
     TODO: Bla bla bla ...
     %}
 

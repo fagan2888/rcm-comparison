@@ -6,6 +6,8 @@ function probability = choiceSetProbabilityGivenObs(paths, betas)
     %{
     The probability is computed by enumerating every possible combination
     (from a drawing sequence) that maps to the paths given in argument.
+
+    It is assumed that the observation is the first path (in paths).
     
     TODO: Bla bla bla ...
     %}

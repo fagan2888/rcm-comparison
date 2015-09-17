@@ -19,6 +19,9 @@ function attribute = getPSAttribute(paths, nDraws, nPathsPerLinkMatrix)
     end
     M = nPathsPerLinkMatrix;
 
+    % TODO: The following computation is done over all the paths, including the
+    %       duplicates. Seems inneficient.
+
     % TODO: Get rid of the loop(s).
     nPaths = size(paths, 1);
     attribute = sparse(zeros(1, nPaths));
@@ -29,7 +32,7 @@ function attribute = getPSAttribute(paths, nDraws, nPathsPerLinkMatrix)
         for j = 1:pathLength
             attribute(i) = attribute(i) + travelTimes(path(j))/M(obsID, path(j));
         end
-        attribute(i) = attribute(i) / sum(travelTimes(path(1:pathLength)));
+        attribute(i) = log(attribute(i) / sum(travelTimes(path(1:pathLength))));
     end
 
     attribute = attribute';

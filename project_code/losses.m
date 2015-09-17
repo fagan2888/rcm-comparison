@@ -19,17 +19,20 @@ function L = losses(obsUtilities, predictions)
     rlPrediction.m.
     %}
     
-    obsIDs = [predictions.obsID];
-    
-    utilities = [predictions.utility];
+    obsIDs = [predictions.obsID]';    
+    utilities = [predictions.utility]';
 
-    if isfield(predictions, 'normalizedProbability')
-        probabilities = [predictions.normalizedProbability];
+    if isfield(predictions, 'correctedProbability')
+        probabilities = [predictions.correctedProbability]';
+    elseif isfield(predictions, 'normalizedProbability')
+        probabilities = [predictions.normalizedProbability]';
     else
-        probabilities = [predictions.probability];
+        probabilities = [predictions.probability]';
     end
 
-    tailIndices = find(utilities' > obsUtilities(obsIDs));
-    
-    L = accumarray(full(obsIDs(tailIndices))', probabilities(tailIndices)');
+    tailIndices = find(utilities > obsUtilities(obsIDs));
+
+    L = accumarray(full(obsIDs(tailIndices)), probabilities(tailIndices));
+    % We make sure the vector has the right size. (We pad it with zeros.)
+    L(size(obsUtilities, 1)) = 0.0;
 end

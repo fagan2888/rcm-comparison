@@ -2,9 +2,10 @@
 % =========================================================
 
 
-ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382]; % 2015
+ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382];
 
 N_DRAWS = 5;
+
 
 % Seed used for the partitionning of the observations into three sets (training,
 % validation and test).
@@ -32,41 +33,38 @@ validSet = myObs(idxEndTrain+1:idxEndValid, :);
 testSet = myObs(idxEndValid+1:end, :);
 
 
-valid5 = pathGeneration(validSet, ...
-                        sprintf('valid%d', RNG_SEED), ...
-                        N_DRAWS, ...
-                        ESTIMATED_BETAS, ...
-                        false, ...
-                        'rngSeed', 20155);
-paths = getPaths(valid5);
+valid = pathGeneration(validSet, ...
+                       sprintf('valid%d', RNG_SEED), ...
+                       N_DRAWS, ...
+                       ESTIMATED_BETAS, ...
+                       false, ...
+                       'rngSeed', 20155);
+paths = getPaths(valid);
 
 % TODO: Most of the following is way too involved to be in a user script. It
 %       should be put in one or several functions (in /project_code).
 
-predictions = psPrediction(paths, N_DRAWS, ESTIMATED_BETAS);
+predictions = psPrediction(paths, N_DRAWS, ESTIMATED_BETAS, false);
 
 pathsWithObservations = addObservationsToPaths(validSet, paths);
 predictionsWithObservations = psPrediction(pathsWithObservations, ...
                                            N_DRAWS + 1, ...
-                                           ESTIMATED_BETAS);
+                                           ESTIMATED_BETAS, ...
+                                           false);
 
 % ======================================================================================
 % We join the two predictions (we retrieve the probabilities from the 1st one
 % (predictions) and the utilities from the 2nd one (predictionsWithObservations)).
 % --------------------------------------------------------------------------------------
 obsIDs1 = [predictions.obsID]';
-paths1 = [predictions.path]';
+paths1 = getPathsFromPredictions(predictions);
 obsIDs2 = [predictionsWithObservations.obsID]';
-paths2 = [predictionsWithObservations.path]';
+paths2 = getPathsFromPredictions(predictionsWithObservations);
 probabilities = [predictions.probability]';
 
-nPaths1 = size(obsIDs1, 1);
-pathWidth1 = size(paths1, 1) / nPaths1;
-nPaths2 = size(obsIDs2, 1);
-pathWidth2 = size(paths2, 1) / nPaths2;
-
-paths1 = reshape(paths1, pathWidth1, nPaths1)';
-paths2 = reshape(paths2, pathWidth2, nPaths2)';
+nPaths1 = size(paths1, 1);
+nPaths2 = size(paths2, 1);
+pathWidth2 = size(paths2, 2);
 
 % We pad paths1 with zeros so that it has the same width as paths2.
 paths1(nPaths1, pathWidth2) = 0;
@@ -83,13 +81,15 @@ cellNewProbabilities = num2cell(newProbabilities, 2);
 [predictionsWithObservations.probability] = cellNewProbabilities{:};
 % ======================================================================================
 
+% TODO: This is already computed in predictionsWithObservations.
 M = nPathsPerLink(pathsWithObservations, N_DRAWS + 1);
 utilities = psUtilitiesForObservations(validSet, ESTIMATED_BETAS, M);
 
-loss = mean(losses(utilities, predictionsWithObservations));
+predictionsWithObservations = hansenCorrection(predictionsWithObservations, ...
+                                               utilities, ...
+                                               N_DRAWS, ...
+                                               ESTIMATED_BETAS);
 
-disp(sprintf('Tail loss for the PS model: %f', loss));
+L = losses(utilities, predictionsWithObservations);
 
-predictions = predictionsWithObservations;
-save('utilitiesOfTheObservations.mat', 'utilities');
-save('predictionsForTheAlternatives.mat', 'predictions');
+disp(sprintf('Tail loss for the PS model: %f', mean(L)));

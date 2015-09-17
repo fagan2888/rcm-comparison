@@ -3,11 +3,13 @@
 
 
 ESTIMATED_BETAS = [-2.7629, -0.9894, -0.5637, -4.3165, 1.5382];
+
 N_DRAWS = 5;
 
 LINK_SIZE_BETAS = [-2.5, -1.0, -0.4, -20.0];
 
 ESTIMATED_BETAS_RL = [-2.4225, -0.9223, -0.4394, -4.3992];
+
 ESTIMATED_BETAS_RL_LS = [-3.0416, -1.0571, -0.3720, -4.4641, -0.2309];
 
 
@@ -38,23 +40,28 @@ testSet = myObs(idxEndValid+1:end, :);
 
 
 % We generate paths for validation.
-valid5 = pathGeneration(validSet, ...
-                        sprintf('valid%d', RNG_SEED), ...
-                        N_DRAWS, ...
-                        ESTIMATED_BETAS, ...
-                        false, ...
-                        'rngSeed', 20155);
-paths = getPaths(valid5);
+valid = pathGeneration(validSet, ...
+                       sprintf('valid%d', RNG_SEED), ...
+                       N_DRAWS, ...
+                       ESTIMATED_BETAS, ...
+                       false, ...
+                       'rngSeed', 20155);
+paths = getPaths(valid);
 
 % We compute the loss for the "without-LinkSize" model.
-predictions = rlPredictionForPaths(paths, N_DRAWS, ESTIMATED_BETAS_RL);
-[utilities, ~] = rlPrediction(validSet, ESTIMATED_BETAS_RL);
-loss = mean(losses(utilities, predictions));
+predictions = rlPredictionForPaths(paths, N_DRAWS, ESTIMATED_BETAS_RL, ESTIMATED_BETAS);
+utilities = rlPrediction(validSet, ESTIMATED_BETAS_RL);
+predictions = hansenCorrection(predictions, utilities, N_DRAWS, ESTIMATED_BETAS);
+L = losses(utilities, predictions);
+loss = mean(L);
 
 % We compute the loss for the "with-LinkSize" model.
-predictions = rlPredictionForPaths(paths, N_DRAWS, ESTIMATED_BETAS_RL_LS, LINK_SIZE_BETAS);
-[utilities, ~] = rlPrediction(validSet, ESTIMATED_BETAS_RL_LS, LINK_SIZE_BETAS);
-lossLS = mean(losses(utilities, predictions));
+predictions = rlPredictionForPaths(paths, N_DRAWS, ESTIMATED_BETAS_RL_LS, ESTIMATED_BETAS, ...
+                                   LINK_SIZE_BETAS);
+utilities = rlPrediction(validSet, ESTIMATED_BETAS_RL_LS, LINK_SIZE_BETAS);
+predictions = hansenCorrection(predictions, utilities, N_DRAWS, ESTIMATED_BETAS);
+L = losses(utilities, predictions);
+lossLS = mean(L);
 
 disp(sprintf('Tail loss for the "without-LinkSize" RL model: %f', loss));
 disp(sprintf('Tail loss for the "with-LinkSize" RL model: %f', lossLS));

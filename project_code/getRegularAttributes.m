@@ -20,6 +20,9 @@ function attributes = getRegularAttributes(paths)
     % We retrieve the link counts.
     linkCounts = max(LeftTurn); % TODO: Why do linkCounts depend on LeftTurn?
 
+    % TODO: The following computation is done over all the paths, including the
+    %       duplicates. Seems inneficient.
+
     % TODO: Get rid of the loop(s).
     nPaths = size(paths, 1);
     attributes = sparse(zeros(4, nPaths));

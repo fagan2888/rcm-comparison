@@ -2,7 +2,7 @@
 % =========================================================
 
 
-function predictions = psPrediction(paths, nDraws, betas)
+function predictions = psPrediction(paths, nDraws, betas, correctUtilities)
     %{
     Applies the path size model, parametrized by betas, on each path and
     computes the path's utility and probability.
@@ -41,7 +41,9 @@ function predictions = psPrediction(paths, nDraws, betas)
                           'un', 0);
     %}
 
-    utilities = psUtilities(paths, nDraws, betas);
+    counts = full(uPaths(:, 2));
+
+    utilities = psUtilities(paths, nDraws, betas, correctUtilities);
     utilities = utilities(uniqueIndices);
 
     obsIDs = uPaths(:, 1);
@@ -49,5 +51,5 @@ function predictions = psPrediction(paths, nDraws, betas)
     sumExpV = accumarray(full(obsIDs), expV);
     probabilities = expV ./ sumExpV(obsIDs);
 
-    predictions = predictionAux(uPaths, utilities, probabilities);
+    predictions = predictionAux(uPaths, counts, utilities, probabilities);
 end

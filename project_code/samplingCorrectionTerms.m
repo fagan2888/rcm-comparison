@@ -2,16 +2,16 @@
 % =========================================================
 
 
-function attributes = myGetPathAttributes(paths, nDraws)
+function terms = samplingCorrectionTerms(paths, nDraws, betas)
     %{
     TODO: Bla bla bla ...
     %}
-
+    
     % TODO: The following computation is done over all the paths, including the
     %       duplicates. Seems inneficient.
     
-    regularAttributes = getRegularAttributes(paths);
-    psAttribute = getPSAttribute(paths, nDraws);
-    
-    attributes = [regularAttributes, psAttribute];
+    counts = full(paths(:, 1));
+    [~, samplingProbabilities] = rlPrediction(paths(:, 2:end), betas);
+
+    terms = log(counts ./ samplingProbabilities);
 end
