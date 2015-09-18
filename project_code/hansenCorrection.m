@@ -25,7 +25,7 @@ function newPredictions = hansenCorrection(predictions, obsUtilities, nDraws, ..
         [predictions.samplingProbability] = cellSamplingProbabilities{:};
     else
         % The sampling probabilities are expected to be included in the
-        % predictions struct.        
+        % predictions structure array.
         samplingProbabilities = [predictions.samplingProbability]';
     end
 
@@ -38,7 +38,10 @@ function newPredictions = hansenCorrection(predictions, obsUtilities, nDraws, ..
     sumSamplingProbabilities = accumarray(full(obsIDs(tailIndices)), ...
                                           samplingProbabilities(tailIndices));
     % We make sure the vector has the right size. (We pad it with zeros.)
-    sumSamplingProbabilities(size(obsUtilities, 1)) = 0.0;
+    nObservations = size(obsUtilities, 1);
+    if size(sumSamplingProbabilities, 1) ~= nObservations
+        sumSamplingProbabilities(nObservations) = 0.0;
+    end
 
     % ================================================================
     % We compute the corrected probabilities.

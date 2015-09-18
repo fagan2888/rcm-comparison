@@ -34,5 +34,8 @@ function L = losses(obsUtilities, predictions)
 
     L = accumarray(full(obsIDs(tailIndices)), probabilities(tailIndices));
     % We make sure the vector has the right size. (We pad it with zeros.)
-    L(size(obsUtilities, 1)) = 0.0;
+    nObservations = size(obsUtilities, 1);
+    if size(L, 1) ~= nObservations
+        L(nObservations) = 0.0;
+    end
 end
