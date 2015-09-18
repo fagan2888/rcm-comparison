@@ -37,6 +37,7 @@ function newPredictions = hansenCorrection(predictions, obsUtilities, nDraws, ..
     tailIndices = find(utilities > obsUtilities(obsIDs));
     sumSamplingProbabilities = accumarray(full(obsIDs(tailIndices)), ...
                                           samplingProbabilities(tailIndices));
+    
     % We make sure the vector has the right size. (We pad it with zeros.)
     nObservations = size(obsUtilities, 1);
     if size(sumSamplingProbabilities, 1) ~= nObservations

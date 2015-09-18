@@ -33,6 +33,7 @@ function L = losses(obsUtilities, predictions)
     tailIndices = find(utilities > obsUtilities(obsIDs));
 
     L = accumarray(full(obsIDs(tailIndices)), probabilities(tailIndices));
+    
     % We make sure the vector has the right size. (We pad it with zeros.)
     nObservations = size(obsUtilities, 1);
     if size(L, 1) ~= nObservations
